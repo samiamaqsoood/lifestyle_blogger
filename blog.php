@@ -93,7 +93,11 @@ include 'includes/header.php';
             <div class="blog-grid">
                 <?php foreach ($posts as $post): ?>
                 <div class="blog-card">
-                    <a href="<?php echo SITE_URL; ?>/blog-single.php?slug=<?php echo $post['slug']; ?>" class="blog-image">
+                    <a href="<?php echo isset($_SESSION['user_id']) ? SITE_URL . '/blog-single.php?slug=' . $post['slug'] : SITE_URL . '/login.php'; ?>" 
+                       class="blog-image"
+                       <?php if (!isset($_SESSION['user_id'])): ?>
+                       onclick="alert('Please login to read full articles'); return false;"
+                       <?php endif; ?>>
                         <img src="<?php echo SITE_URL; ?>/assets/images/blog/<?php echo $post['image']; ?>" 
                              alt="<?php echo htmlspecialchars($post['title']); ?>">
                     </a>
@@ -102,7 +106,10 @@ include 'includes/header.php';
                             <?php echo htmlspecialchars($post['category_name']); ?>
                         </a>
                         <h3>
-                            <a href="<?php echo SITE_URL; ?>/blog-single.php?slug=<?php echo $post['slug']; ?>">
+                            <a href="<?php echo isset($_SESSION['user_id']) ? SITE_URL . '/blog-single.php?slug=' . $post['slug'] : 'javascript:void(0)'; ?>"
+                               <?php if (!isset($_SESSION['user_id'])): ?>
+                               onclick="alert('Please login to read full articles'); return false;"
+                               <?php endif; ?>>
                                 <?php echo htmlspecialchars($post['title']); ?>
                             </a>
                         </h3>
@@ -112,6 +119,13 @@ include 'includes/header.php';
                         <div class="blog-meta">
                             <span><i class="far fa-calendar"></i> <?php echo formatDate($post['created_at']); ?></span>
                         </div>
+                        <?php if (!isset($_SESSION['user_id'])): ?>
+                            <div style="margin-top: 10px;">
+                                <a href="<?php echo SITE_URL; ?>/login.php" class="btn btn-primary" style="font-size: 0.9rem; padding: 8px 20px;">
+                                    Login to Read More
+                                </a>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <?php endforeach; ?>

@@ -11,6 +11,13 @@ if (!defined('DB_HOST')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?><?php echo SITE_NAME; ?></title>
     <meta name="description" content="<?php echo SITE_DESCRIPTION; ?>">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?php echo SITE_URL; ?>/assets/images/favicon.ico?v=<?php echo time(); ?>">
+    <link rel="shortcut icon" type="image/x-icon" href="<?php echo SITE_URL; ?>/assets/images/favicon.ico?v=<?php echo time(); ?>">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="<?php echo SITE_URL; ?>/assets/images/favicon.ico?v=<?php echo time(); ?>">
+    <link rel="apple-touch-icon" href="<?php echo SITE_URL; ?>/assets/images/favicon.ico?v=<?php echo time(); ?>">
+    
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,6 +31,7 @@ if (!defined('DB_HOST')) {
             <div class="container">
                 <div class="nav-wrapper">
                     <a href="<?php echo SITE_URL; ?>" class="logo">
+                        <img src="<?php echo SITE_URL; ?>/assets/images/favicon.ico" alt="Lifestyle Blogger Logo" class="logo-image">
                         <span class="logo-text">Lifestyle Blogger</span>
                     </a>
                     
@@ -38,7 +46,18 @@ if (!defined('DB_HOST')) {
                         <li><a href="<?php echo SITE_URL; ?>/blog.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'blog.php' ? 'active' : ''; ?>">Blog</a></li>
                         <li><a href="<?php echo SITE_URL; ?>/about.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : ''; ?>">About</a></li>
                         <li><a href="<?php echo SITE_URL; ?>/contact.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>">Contact</a></li>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <li><a href="<?php echo SITE_URL; ?>/logout.php" title="Logout"><i class="fas fa-sign-out-alt"></i></a></li>
+                        <?php else: ?>
+                            <li><a href="<?php echo SITE_URL; ?>/login.php" title="Login"><i class="fas fa-sign-in-alt"></i></a></li>
+                        <?php endif; ?>
                     </ul>
+                    
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <div class="user-greeting" style="margin-right: 15px; color: var(--primary-color); font-weight: 500;">
+                            Welcome, <?php echo htmlspecialchars($_SESSION['user_fullname'] ?? $_SESSION['user_username']); ?>!
+                        </div>
+                    <?php endif; ?>
                     
                     <button class="subscribe-btn">Subscribe</button>
                 </div>

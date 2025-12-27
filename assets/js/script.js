@@ -176,3 +176,47 @@ document.querySelectorAll('.blog-card, .featured-card, .category-card').forEach(
     el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     observer.observe(el);
 });
+
+// Ad Popup Modal (Homepage only - Side Popup)
+// Shows every time the page reloads
+function initAdPopup() {
+    const adPopupModal = document.getElementById('adPopupModal');
+    const adCloseBtn = document.querySelector('.ad-close-btn');
+    
+    // Only run if ad popup exists (homepage only - since it's only in index.php)
+    if (adPopupModal) {
+        // Show ad popup every time page loads (after a short delay for better UX)
+        setTimeout(() => {
+            if (adPopupModal) {
+                adPopupModal.style.display = 'block';
+                // Small delay to trigger animation
+                setTimeout(() => {
+                    adPopupModal.classList.add('show');
+                }, 10);
+            }
+        }, 2000);
+        
+        // Close ad popup when X button is clicked
+        if (adCloseBtn) {
+            adCloseBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (adPopupModal) {
+                    adPopupModal.classList.remove('show');
+                    // Wait for animation, then hide
+                    setTimeout(() => {
+                        adPopupModal.style.display = 'none';
+                    }, 500);
+                }
+            });
+        }
+    }
+}
+
+// Run when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdPopup);
+} else {
+    // DOM is already ready
+    initAdPopup();
+}

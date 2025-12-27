@@ -1,6 +1,13 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/functions.php';
+require_once 'track-view.php';
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    redirect(SITE_URL . '/login.php');
+}
 
 // Get post by slug
 $slug = isset($_GET['slug']) ? sanitize_input($_GET['slug']) : '';
@@ -18,6 +25,9 @@ if (!$post) {
 // Update view count
 $post_id = $post['id'];
 mysqli_query($conn, "UPDATE posts SET views = views + 1 WHERE id = $post_id");
+
+// Track view for ML recommendations
+trackPostView($post_id);
 
 // Get related posts
 $category_id = $post['category_id'];

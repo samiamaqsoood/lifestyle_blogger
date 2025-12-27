@@ -1,24 +1,68 @@
 # Lifestyle Blogger Website - University Project
 
-A full-stack lifestyle blog website clone built with HTML, CSS, JavaScript, PHP, MySQL, and XAMPP.
+A full-stack lifestyle blog website clone built with HTML, CSS, JavaScript, PHP, MySQL, and XAMPP with advanced features including user authentication, ML-based recommendations, and accessibility support.
 
-## 📋 Features
+## 📋 Enhanced Features
 
 ### Frontend
-- **Responsive Design**: Mobile-friendly layout
-- **Home Page**: Hero section, featured posts, categories, testimonials
-- **Blog Listing**: Pagination, search, category filtering
-- **Single Blog Post**: Full article view with related posts
-- **About Page**: Author bio and mission statement
-- **Contact Page**: Contact form with validation
+- **Responsive Design**: Mobile-friendly layout with accessibility features
+- **Home Page**: Hero section, featured posts, ML-based recommendations, categories
+- **Blog Listing**: Pagination, search, category filtering, login requirement for full articles
+- **Single Blog Post**: Full article view (requires login) with social sharing
+- **About Page**: Author bio with mission statement
+- **Contact Page**: Contact form with Google Maps integration, 250-word limit
+- **User Authentication**: Complete registration and login system
+- **Password Recovery**: Forgot password functionality with reset link
 - **Newsletter Subscription**: Email capture system
 
 ### Backend (Admin Panel)
-- **Dashboard**: Statistics overview
+- **Dashboard**: Statistics overview with analytics
 - **Post Management**: Create, edit, delete blog posts
 - **Category Management**: Organize content
 - **Image Upload**: Featured images for posts
-- **User Authentication**: Secure admin login
+- **User Authentication**: Secure admin login separate from user login
+
+### Advanced Features ✨
+1. **User Registration System**
+   - 5 required fields (Full Name, Username, Email, Phone, Password)
+   - Real-time username validation (prevents "admin")
+   - Password match validation
+   - Google reCAPTCHA integration
+   - Password visibility toggle
+
+2. **Dual Login System**
+   - User login (with email/username)
+   - Admin login (separate interface)
+   - Remember me functionality
+   - Forgot password with email recovery
+
+3. **ML-Based Recommendations**
+   - Personalized content based on reading history
+   - Trending posts algorithm
+   - Category-based suggestions
+   - View tracking for analytics
+
+4. **Accessibility Features**
+   - ARIA labels for screen readers
+   - Keyboard navigation support
+   - High contrast mode support
+   - Reduced motion preferences
+   - Skip navigation links
+   - Focus indicators
+
+5. **Interactive Elements**
+   - Image zoom on hover (without card expansion)
+   - 250-word limit on textarea with counter
+   - Google Maps integration
+   - Social media links (working)
+   - Password visibility toggles
+
+6. **Security Features**
+   - Password hashing (bcrypt)
+   - SQL injection prevention
+   - XSS protection
+   - CSRF token ready
+   - Session management
 
 ## 🚀 Installation Steps
 
@@ -70,17 +114,34 @@ Add placeholder images to:
 - `assets/images/blog/` - Name them: post-01.jpg, post-02.jpg, post-03.jpg
 - `assets/images/hero/` - Name them: hero-1.jpg, hero-2.jpg, hero-3.jpg
 - `assets/images/about.jpg`
+- `assets/images/favicon.ico` - Add your favicon (16x16 or 32x32 px)
 
 You can download free images from:
 - Unsplash: https://unsplash.com
 - Pexels: https://www.pexels.com
 
-## 🔐 Admin Access
+### 7. Google reCAPTCHA Setup (Optional but Recommended)
+1. Go to https://www.google.com/recaptcha/admin
+2. Register your site (localhost)
+3. Get your Site Key
+4. Replace the site key in `register.php`:
+   ```html
+   <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE"></div>
+   ```
+   Note: The demo key works for testing: `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
 
-### Login Credentials
+## 🔐 Access Credentials
+
+### Admin Login
 - **URL**: http://localhost/lifestyle-blogger/admin/
+- **OR**: http://localhost/lifestyle-blogger/login.php?type=admin
 - **Username**: admin
 - **Password**: admin123
+
+### User Registration
+- **URL**: http://localhost/lifestyle-blogger/register.php
+- Create your own account to test user features
+- Username "admin" is blocked (case-insensitive)
 
 ### Admin Features
 1. **Dashboard**: View statistics
@@ -93,13 +154,19 @@ You can download free images from:
 ```
 lifestyle-blogger/
 │
-├── index.php                    # Home page
-├── blog.php                     # Blog listing
-├── blog-single.php              # Single post view
+├── index.php                    # Home page with ML recommendations
+├── blog.php                     # Blog listing (login required to read)
+├── blog-single.php              # Single post (requires login)
 ├── about.php                    # About page
-├── contact.php                  # Contact page
+├── contact.php                  # Contact page with Maps
+├── login.php                    # User & Admin login
+├── register.php                 # User registration with captcha
+├── forgot-password.php          # Password recovery
+├── reset-password.php           # Password reset form
+├── logout.php                   # User logout
 ├── subscribe.php                # Newsletter handler
 ├── contact-submit.php           # Contact form handler
+├── track-view.php               # ML tracking system
 │
 ├── admin/                       # Admin panel
 │   ├── index.php               # Admin login
@@ -107,7 +174,7 @@ lifestyle-blogger/
 │   ├── add-post.php            # Add/Edit posts
 │   ├── manage-posts.php        # Manage all posts
 │   ├── categories.php          # Category management
-│   ├── logout.php              # Logout
+│   ├── logout.php              # Admin logout
 │   └── includes/
 │       ├── admin-header.php    # Admin header
 │       └── admin-footer.php    # Admin footer
@@ -115,15 +182,16 @@ lifestyle-blogger/
 ├── includes/                    # PHP includes
 │   ├── config.php              # Database config
 │   ├── functions.php           # Helper functions
-│   ├── header.php              # Site header
+│   ├── header.php              # Site header (with user menu)
 │   └── footer.php              # Site footer
 │
 ├── assets/                      # Static assets
 │   ├── css/
-│   │   └── style.css           # Main stylesheet
+│   │   └── style.css           # Main stylesheet (with accessibility)
 │   ├── js/
 │   │   └── script.js           # JavaScript
 │   └── images/                 # Images
+│       ├── favicon.ico         # Website icon
 │       ├── blog/               # Blog post images
 │       ├── hero/               # Hero section images
 │       └── about.jpg           # About page image
@@ -153,17 +221,23 @@ lifestyle-blogger/
 
 ### Tables
 
-#### 1. users
+#### 1. users (Admin accounts)
 - id, username, password, email, created_at
 
-#### 2. categories
+#### 2. user_accounts (Registered users)
+- id, fullname, username, email, phone, password, reset_token, reset_expires, created_at
+
+#### 3. categories
 - id, name, slug, description, created_at
 
-#### 3. posts
+#### 4. posts
 - id, title, slug, content, excerpt, image, category_id, author_id, is_featured, views, created_at, updated_at
 
-#### 4. subscribers
+#### 5. subscribers
 - id, email, subscribed_at
+
+#### 6. page_views (For ML recommendations)
+- id, post_id, user_id, ip_address, viewed_at
 
 ## 🔧 Customization
 

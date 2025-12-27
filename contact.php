@@ -204,13 +204,27 @@ include 'includes/header.php';
                     </div>
                 </div>
                 
+                <!-- Google Map -->
+                <div class="map-container" style="margin: 30px 0;">
+                    <h3 style="margin-bottom: 15px;">Find Us</h3>
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093703!2d-122.41941492347107!3d37.77492971021411!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sSan%20Francisco%2C%20CA%2C%20USA!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s" 
+                        width="100%" 
+                        height="300" 
+                        style="border:0; border-radius: 10px;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Location Map">
+                    </iframe>
+                </div>
+                
                 <h3>Follow Me</h3>
                 <div class="contact-social">
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://instagram.com/samiamaqsood_" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/samia-maqsood-a30b6b358" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/samiamaqsoood" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="mailto:samiamaqsoood@email.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
             
@@ -235,7 +249,10 @@ include 'includes/header.php';
                     
                     <div class="form-group">
                         <label for="message">Message *</label>
-                        <textarea id="message" name="message" required></textarea>
+                        <textarea id="message" name="message" required maxlength="1500"></textarea>
+                        <small style="color: var(--light-text);">
+                            <span id="charCount">0</span>/250 words (Max 1500 characters)
+                        </small>
                     </div>
                     
                     <button type="submit" class="submit-btn">Send Message</button>
@@ -246,5 +263,31 @@ include 'includes/header.php';
         </div>
     </div>
 </section>
+
+<script>
+// Character/Word counter for message textarea
+const messageTextarea = document.getElementById('message');
+const charCountSpan = document.getElementById('charCount');
+
+if (messageTextarea) {
+    messageTextarea.addEventListener('input', function() {
+        const text = this.value.trim();
+        const words = text.split(/\s+/).filter(word => word.length > 0);
+        const wordCount = words.length;
+        
+        charCountSpan.textContent = wordCount;
+        
+        // Limit to 250 words
+        if (wordCount > 250) {
+            const limitedWords = words.slice(0, 250).join(' ');
+            this.value = limitedWords;
+            charCountSpan.textContent = '250';
+            charCountSpan.style.color = '#e74c3c';
+        } else {
+            charCountSpan.style.color = wordCount > 200 ? '#f39c12' : 'inherit';
+        }
+    });
+}
+</script>
 
 <?php include 'includes/footer.php'; ?>

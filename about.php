@@ -159,7 +159,7 @@ include 'includes/header.php';
                 <img src="<?php echo SITE_URL; ?>/assets/images/about.jpg" alt="Sophia Ellis">
             </div>
             <div class="about-hero-text">
-                <h1>Hi! I'm Sophia Ellis</h1>
+                <h1>Hi! I'm Samiyah</h1>
                 <p>I'm a marketing professional passionate about exploring the world, embracing technology, enhancing personal growth, and nurturing wellness.</p>
                 <p>Here, I share my adventures, insights, and tips to inspire and empower you. Whether you're seeking travel inspiration, tech updates, self-improvement strategies, or wellness advice, you're in the right place.</p>
                 <p>My journey began with a curiosity about the world and a desire to connect with others who share similar passions. Over the years, I've traveled to dozens of countries, worked with innovative tech companies, and developed a holistic approach to wellness that balances mind, body, and spirit.</p>

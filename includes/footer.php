@@ -14,10 +14,10 @@
                 </ul>
                 
                 <div class="footer-social">
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+                    <a href="https://instagram.com/samiamaqsood_" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/samia-maqsood-a30b6b358" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/samiamaqsoood" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="mailto:samiamaqsoood@email.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
             

@@ -57,6 +57,32 @@ INSERT INTO categories (name, slug, description) VALUES
 ('Technology', 'technology', 'Stay ahead with the latest tech trends and insights.'),
 ('Wellness', 'wellness', 'Embrace health and balance in your everyday life.');
 
+-- User accounts table (for registered users)
+CREATE TABLE user_accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(100) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    password VARCHAR(255) NOT NULL,
+    reset_token VARCHAR(100),
+    reset_expires DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Page views tracking for ML recommendations
+CREATE TABLE page_views (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT NOT NULL,
+    user_id INT DEFAULT NULL,
+    ip_address VARCHAR(45),
+    viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user_accounts(id) ON DELETE SET NULL,
+    INDEX idx_post_id (post_id),
+    INDEX idx_viewed_at (viewed_at)
+);
+
 -- Insert sample posts
 INSERT INTO posts (title, slug, content, excerpt, image, category_id, is_featured) VALUES 
 ('The Future of Wearable Tech: Innovations Shaping Our Lives', 

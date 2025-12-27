@@ -1,11 +1,19 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/functions.php';
+require_once 'track-view.php';
 
 $page_title = 'Home';
 $featured_posts = getFeaturedPosts(3);
 $latest_posts = getAllPosts(6);
 $categories = getAllCategories();
+
+// Get ML-based recommendations
+if (isset($_SESSION['user_id'])) {
+    $recommended_posts = getPersonalizedRecommendations($_SESSION['user_id'], 3);
+} else {
+    $recommended_posts = getTrendingPosts(3);
+}
 
 include 'includes/header.php';
 ?>
@@ -15,7 +23,7 @@ include 'includes/header.php';
     <div class="container">
         <div class="hero-content">
             <div class="hero-text">
-                <p class="hero-subtitle">I'm Sophia!</p>
+                <p class="hero-subtitle">I'm Samiyah!</p>
                 <h1 class="hero-title">Welcome to My Journey of Discovery and Growth</h1>
                 <p class="hero-description">A marketing professional passionate about exploring the world, embracing technology, enhancing personal growth, and nurturing wellness.</p>
                 <a href="#featured" class="btn btn-primary">Get Inspired</a>
@@ -151,6 +159,57 @@ include 'includes/header.php';
     </div>
 </section>
 
+<!-- ML-Based Recommendations Section -->
+<section class="recommended-blogs">
+    <div class="container">
+        <h2 class="section-title">
+            <?php echo isset($_SESSION['user_id']) ? 'Recommended For You' : 'Trending Now'; ?>
+        </h2>
+        <p style="text-align: center; color: var(--light-text); margin-bottom: 40px;">
+            <?php echo isset($_SESSION['user_id']) ? 
+                'Based on your reading history and interests' : 
+                'Most popular articles this week'; ?>
+        </p>
+        <div class="blog-grid">
+            <?php foreach ($recommended_posts as $post): ?>
+            <div class="blog-card">
+                <a href="<?php echo isset($_SESSION['user_id']) ? SITE_URL . '/blog-single.php?slug=' . $post['slug'] : SITE_URL . '/login.php'; ?>" 
+                   class="blog-image">
+                    <img src="<?php echo SITE_URL; ?>/assets/images/blog/<?php echo $post['image']; ?>" 
+                         alt="<?php echo htmlspecialchars($post['title']); ?>">
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <div style="position: absolute; top: 10px; right: 10px; background: var(--primary-color); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.85rem;">
+                            <i class="fas fa-fire"></i> Trending
+                        </div>
+                    <?php endif; ?>
+                </a>
+                <div class="blog-card-content">
+                    <span class="blog-category"><?php echo htmlspecialchars($post['category_name']); ?></span>
+                    <h3>
+                        <a href="<?php echo isset($_SESSION['user_id']) ? SITE_URL . '/blog-single.php?slug=' . $post['slug'] : 'javascript:void(0)'; ?>"
+                           <?php if (!isset($_SESSION['user_id'])): ?>
+                           onclick="alert('Please login to read full articles'); return false;"
+                           <?php endif; ?>>
+                            <?php echo htmlspecialchars($post['title']); ?>
+                        </a>
+                    </h3>
+                    <div class="blog-meta">
+                        <span><?php echo formatDate($post['created_at']); ?></span>
+                    </div>
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <div style="margin-top: 10px;">
+                            <a href="<?php echo SITE_URL; ?>/login.php" class="btn btn-primary" style="font-size: 0.9rem; padding: 8px 20px;">
+                                Login to Read
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
 <!-- Newsletter Section -->
 <section class="newsletter-section">
     <div class="container">
@@ -165,5 +224,20 @@ include 'includes/header.php';
         </div>
     </div>
 </section>
+
+<!-- Ad Popup Modal -->
+<div class="ad-popup-modal" id="adPopupModal">
+    <div class="ad-popup-content">
+        <span class="ad-close-btn">&times;</span>
+        <div class="ad-content">
+            <h3>Special Offer!</h3>
+            <p>Get 20% off on our premium subscription</p>
+            <a href="<?php echo SITE_URL; ?>/blog.php" class="btn btn-primary">Explore Now</a>
+        </div>
+    </div>
+</div>
+
+<!-- Test: Uncomment below to reset popup (for testing only) -->
+<!-- <script>localStorage.removeItem('adPopupClosed'); console.log('Ad popup reset - refresh page to see it');</script> -->
 
 <?php include 'includes/footer.php'; ?>
