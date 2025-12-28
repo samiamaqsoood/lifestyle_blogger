@@ -20,11 +20,16 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: var(--body-font);
     color: var(--text-color);
     line-height: 1.6;
     font-size: 16px;
+    overflow-x: hidden;
 }
 
 img {
@@ -68,6 +73,69 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
     margin-bottom: 3rem;
     color: var(--secondary-color);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+.section-title.animate {
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+/* ============================================
+   Animation Keyframes
+   ============================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUpScale {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* ============================================
@@ -206,6 +274,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero {
     padding: 80px 0;
     background-color: var(--light-bg);
+    overflow: hidden;
 }
 
 .hero-content {
@@ -215,11 +284,19 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
 }
 
+.hero-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
 .hero-subtitle {
     font-size: 1.2rem;
     color: var(--primary-color);
     margin-bottom: 1rem;
     font-style: italic;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.2s forwards;
 }
 
 .hero-title {
@@ -227,12 +304,27 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--secondary-color);
     margin-bottom: 1.5rem;
     line-height: 1.1;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.4s forwards;
 }
 
 .hero-description {
     font-size: 1.1rem;
     color: var(--light-text);
     margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+}
+
+.hero-text .btn {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.8s forwards;
+}
+
+.hero-images {
+    opacity: 0;
+    transform: translateX(30px);
+    animation: fadeInRight 1s ease 0.3s forwards;
 }
 
 .hero-image-grid {
@@ -246,6 +338,12 @@ h1, h2, h3, h4, h5, h6 {
     height: 250px;
     object-fit: cover;
     border-radius: 10px;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.hero-image-grid img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .hero-image-grid img:first-child {
@@ -259,6 +357,7 @@ h1, h2, h3, h4, h5, h6 {
 .social-stats {
     padding: 60px 0;
     background-color: #fff;
+    overflow: hidden;
 }
 
 .stats-grid {
@@ -270,17 +369,35 @@ h1, h2, h3, h4, h5, h6 {
 
 .stat-item {
     text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.stat-item.animate {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
 }
 
 .stat-item i {
     font-size: 3rem;
     color: var(--primary-color);
     margin-bottom: 1rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.stat-item:hover i {
+    transform: scale(1.1);
+    color: var(--secondary-color);
 }
 
 .stat-item h3 {
     font-size: 2rem;
     color: var(--secondary-color);
+    transition: color 0.3s ease;
 }
 
 /* ============================================
@@ -289,6 +406,7 @@ h1, h2, h3, h4, h5, h6 {
 .featured-blogs {
     padding: 80px 0;
     background-color: var(--light-bg);
+    overflow: hidden;
 }
 
 .featured-grid {
@@ -302,18 +420,29 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+}
+
+.featured-card.animate {
+    animation: fadeInUpScale 0.8s ease forwards;
 }
 
 .featured-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
 .featured-card img {
     width: 100%;
     height: 300px;
     object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.featured-card:hover img {
+    transform: scale(1.1);
 }
 
 .featured-card-content {
@@ -336,6 +465,7 @@ h1, h2, h3, h4, h5, h6 {
 .categories-section {
     padding: 80px 0;
     background-color: #fff;
+    overflow: hidden;
 }
 
 .categories-grid {
@@ -350,12 +480,20 @@ h1, h2, h3, h4, h5, h6 {
     padding: 30px 20px;
     background-color: var(--light-bg);
     border-radius: 10px;
-    transition: var(--transition);
+    transition: all 0.4s ease;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+}
+
+.category-card.animate {
+    animation: fadeInUpScale 0.6s ease forwards;
 }
 
 .category-card:hover {
     background-color: var(--primary-color);
     color: #fff;
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(212, 165, 116, 0.3);
 }
 
 .category-card h3 {
@@ -373,6 +511,7 @@ h1, h2, h3, h4, h5, h6 {
 .latest-blogs {
     padding: 80px 0;
     background-color: var(--light-bg);
+    overflow: hidden;
 }
 
 .blog-grid {
@@ -387,12 +526,18 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+}
+
+.blog-card.animate {
+    animation: fadeInUpScale 0.8s ease forwards;
 }
 
 .blog-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
 
 .blog-image {
@@ -446,6 +591,17 @@ h1, h2, h3, h4, h5, h6 {
 .testimonial-section {
     padding: 80px 0;
     background-color: #fff;
+    overflow: hidden;
+}
+
+.testimonial {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.testimonial.animate {
+    animation: fadeInUp 0.8s ease forwards;
 }
 
 .testimonial {
@@ -475,6 +631,27 @@ h1, h2, h3, h4, h5, h6 {
 .about-preview {
     padding: 80px 0;
     background-color: var(--light-bg);
+    overflow: hidden;
+}
+
+.about-image {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.8s ease;
+}
+
+.about-image.animate {
+    animation: fadeInLeft 0.8s ease forwards;
+}
+
+.about-text {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.8s ease;
+}
+
+.about-text.animate {
+    animation: fadeInRight 0.8s ease forwards;
 }
 
 .about-preview-content {
@@ -517,6 +694,17 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--secondary-color);
     color: #fff;
     text-align: center;
+    overflow: hidden;
+}
+
+.newsletter-content {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.newsletter-content.animate {
+    animation: fadeInUp 0.8s ease forwards;
 }
 
 .newsletter-section .section-title {

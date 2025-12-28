@@ -23,6 +23,11 @@ function generateSlug($string) {
 // Get all posts
 function getAllPosts($limit = null) {
     global $conn;
+    
+    if (!$conn) {
+        return [];
+    }
+    
     $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug, u.username as author_name 
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
@@ -30,16 +35,26 @@ function getAllPosts($limit = null) {
             ORDER BY p.created_at DESC";
     
     if ($limit) {
+        $limit = (int)$limit;
         $sql .= " LIMIT $limit";
     }
     
-    $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $result = @mysqli_query($conn, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+    return [];
 }
 
 // Get featured posts
 function getFeaturedPosts($limit = 3) {
     global $conn;
+    
+    if (!$conn) {
+        return [];
+    }
+    
+    $limit = (int)$limit;
     $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug 
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
@@ -47,22 +62,34 @@ function getFeaturedPosts($limit = 3) {
             ORDER BY p.created_at DESC 
             LIMIT $limit";
     
-    $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $result = @mysqli_query($conn, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+    return [];
 }
 
 // Get post by slug
 function getPostBySlug($slug) {
     global $conn;
+    
+    if (!$conn) {
+        return null;
+    }
+    
     $slug = sanitize_input($slug);
     $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug, u.username as author_name 
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
             LEFT JOIN users u ON p.author_id = u.id 
-            WHERE p.slug = '$slug'";
+            WHERE p.slug = '$slug'
+            LIMIT 1";
     
-    $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_assoc($result);
+    $result = @mysqli_query($conn, $sql);
+    if ($result) {
+        return mysqli_fetch_assoc($result);
+    }
+    return null;
 }
 
 // Get posts by category
@@ -86,9 +113,17 @@ function getPostsByCategory($category_slug, $limit = null) {
 // Get all categories
 function getAllCategories() {
     global $conn;
+    
+    if (!$conn) {
+        return [];
+    }
+    
     $sql = "SELECT * FROM categories ORDER BY name ASC";
-    $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $result = @mysqli_query($conn, $sql);
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+    return [];
 }
 
 // Format date

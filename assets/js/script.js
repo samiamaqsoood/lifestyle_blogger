@@ -155,26 +155,52 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Animation on Scroll
+// Enhanced Animation on Scroll
 const observerOptions = {
     threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    rootMargin: '0px 0px -100px 0px'
 };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+const animationObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            // Add delay for staggered animation
+            setTimeout(() => {
+                entry.target.classList.add('animate');
+            }, index * 100);
+            animationObserver.unobserve(entry.target);
         }
     });
 }, observerOptions);
 
-document.querySelectorAll('.blog-card, .featured-card, .category-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
+// Animate section titles
+document.querySelectorAll('.section-title').forEach((el, index) => {
+    animationObserver.observe(el);
+});
+
+// Animate cards with staggered delay
+document.querySelectorAll('.blog-card, .featured-card, .category-card').forEach((el, index) => {
+    animationObserver.observe(el);
+});
+
+// Animate stat items
+document.querySelectorAll('.stat-item').forEach((el, index) => {
+    animationObserver.observe(el);
+});
+
+// Animate testimonial
+document.querySelectorAll('.testimonial').forEach(el => {
+    animationObserver.observe(el);
+});
+
+// Animate about section
+document.querySelectorAll('.about-image, .about-text').forEach(el => {
+    animationObserver.observe(el);
+});
+
+// Animate newsletter section
+document.querySelectorAll('.newsletter-content').forEach(el => {
+    animationObserver.observe(el);
 });
 
 // Ad Popup Modal (Homepage only - Side Popup)
