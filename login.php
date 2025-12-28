@@ -11,59 +11,67 @@ $error = '';
 $login_type = isset($_GET['type']) && $_GET['type'] === 'admin' ? 'admin' : 'user';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = sanitize_input($_POST['username']);
-    $password = $_POST['password'];
-    $remember = isset($_POST['remember']);
-    $is_admin_login = isset($_POST['admin_login']);
-    
-    if (empty($username) || empty($password)) {
-        $error = 'Please enter both username and password.';
+    // Check database connection first
+    if (!$conn) {
+        $error = 'Database connection error. Please try again later.';
     } else {
-        if ($is_admin_login) {
-            // Admin login
-            $sql = "SELECT * FROM users WHERE username = '$username'";
-            $result = mysqli_query($conn, $sql);
-            
-            if (mysqli_num_rows($result) === 1) {
-                $user = mysqli_fetch_assoc($result);
+        $username = sanitize_input($_POST['username']);
+        $password = $_POST['password'];
+        $remember = isset($_POST['remember']);
+        // Check if admin_login is explicitly set to '1', not just if it exists
+        $is_admin_login = isset($_POST['admin_login']) && $_POST['admin_login'] === '1';
+        
+        if (empty($username) || empty($password)) {
+            $error = 'Please enter both username and password.';
+        } else {
+            if ($is_admin_login) {
+                // Admin login - only allow admin users
+                $username_escaped = mysqli_real_escape_string($conn, $username);
+                $sql = "SELECT * FROM users WHERE username = '$username_escaped' LIMIT 1";
+                $result = @mysqli_query($conn, $sql);
                 
-                if (password_verify($password, $user['password'])) {
-                    $_SESSION['admin_id'] = $user['id'];
-                    $_SESSION['admin_username'] = $user['username'];
-                    redirect(SITE_URL . '/admin/dashboard.php');
+                if ($result && mysqli_num_rows($result) === 1) {
+                    $user = mysqli_fetch_assoc($result);
+                    
+                    if (password_verify($password, $user['password'])) {
+                        $_SESSION['admin_id'] = $user['id'];
+                        $_SESSION['admin_username'] = $user['username'];
+                        redirect(SITE_URL . '/admin/dashboard.php');
+                    } else {
+                        $error = 'Invalid admin credentials.';
+                    }
                 } else {
                     $error = 'Invalid admin credentials.';
                 }
             } else {
-                $error = 'Invalid admin credentials.';
-            }
-        } else {
-            // User login
-            $sql = "SELECT * FROM user_accounts WHERE username = '$username' OR email = '$username'";
-            $result = mysqli_query($conn, $sql);
-            
-            if (mysqli_num_rows($result) === 1) {
-                $user = mysqli_fetch_assoc($result);
+                // User login - only allow regular users (not admins)
+                $username_escaped = mysqli_real_escape_string($conn, $username);
+                $sql = "SELECT * FROM user_accounts WHERE (username = '$username_escaped' OR email = '$username_escaped') LIMIT 1";
+                $result = @mysqli_query($conn, $sql);
                 
-                if (password_verify($password, $user['password'])) {
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['user_username'] = $user['username'];
-                    $_SESSION['user_fullname'] = $user['fullname'];
+                if ($result && mysqli_num_rows($result) === 1) {
+                    $user = mysqli_fetch_assoc($result);
                     
-                    // Remember me functionality
-                    if ($remember) {
-                        setcookie('user_login', $user['id'], time() + (86400 * 30), '/');
+                    if (password_verify($password, $user['password'])) {
+                        $_SESSION['user_id'] = $user['id'];
+                        $_SESSION['user_username'] = $user['username'];
+                        $_SESSION['user_fullname'] = $user['fullname'];
+                        
+                        // Remember me functionality
+                        if ($remember) {
+                            setcookie('user_login', $user['id'], time() + (86400 * 30), '/');
+                        }
+                        
+                        // Redirect to previous page or home
+                        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : SITE_URL . '/index.php';
+                        unset($_SESSION['redirect_after_login']);
+                        redirect($redirect_url);
+                    } else {
+                        $error = 'Invalid username or password.';
                     }
-                    
-                    // Redirect to previous page or home
-                    $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : SITE_URL . '/index.php';
-                    unset($_SESSION['redirect_after_login']);
-                    redirect($redirect_url);
                 } else {
                     $error = 'Invalid username or password.';
                 }
-            } else {
-                $error = 'Invalid username or password.';
             }
         }
     }

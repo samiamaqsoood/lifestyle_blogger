@@ -33,30 +33,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (empty($captcha_response)) {
         $error = 'Please complete the captcha verification.';
     } else {
-        // Check if username exists
-        $check_username = mysqli_query($conn, "SELECT id FROM user_accounts WHERE username = '$username'");
-        if (mysqli_num_rows($check_username) > 0) {
-            $error = 'Username already exists. Please choose another one.';
+        // Verify reCAPTCHA with Google
+        $recaptcha_secret = RECAPTCHA_SECRET_KEY;
+        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+        $recaptcha_data = [
+            'secret' => $recaptcha_secret,
+            'response' => $captcha_response,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+        ];
+        
+        $recaptcha_options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => 'Content-Type: application/x-www-form-urlencoded',
+                'content' => http_build_query($recaptcha_data)
+            ]
+        ];
+        
+        $recaptcha_context = stream_context_create($recaptcha_options);
+        $recaptcha_result = @file_get_contents($recaptcha_url, false, $recaptcha_context);
+        $recaptcha_json = json_decode($recaptcha_result, true);
+        
+        if (!$recaptcha_json || !isset($recaptcha_json['success']) || !$recaptcha_json['success']) {
+            $error = 'reCAPTCHA verification failed. Please try again.';
         } else {
-            // Check if email exists
-            $check_email = mysqli_query($conn, "SELECT id FROM user_accounts WHERE email = '$email'");
-            if (mysqli_num_rows($check_email) > 0) {
-                $error = 'Email already registered. Please use another email or login.';
+            // Check if username exists
+            $check_username = mysqli_query($conn, "SELECT id FROM user_accounts WHERE username = '$username'");
+            if (mysqli_num_rows($check_username) > 0) {
+                $error = 'Username already exists. Please choose another one.';
             } else {
-                // Hash password
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Insert user
-                $sql = "INSERT INTO user_accounts (fullname, username, email, phone, password, created_at) 
-                        VALUES ('$fullname', '$username', '$email', '$phone', '$hashed_password', NOW())";
-                
-                if (mysqli_query($conn, $sql)) {
-                    $success = 'Registration successful! You can now login.';
-                    // Optionally auto-login
-                    // $_SESSION['user_id'] = mysqli_insert_id($conn);
-                    // redirect(SITE_URL . '/index.php');
+                // Check if email exists
+                $check_email = mysqli_query($conn, "SELECT id FROM user_accounts WHERE email = '$email'");
+                if (mysqli_num_rows($check_email) > 0) {
+                    $error = 'Email already registered. Please use another email or login.';
                 } else {
-                    $error = 'Registration failed. Please try again.';
+                    // Hash password
+                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                    
+                    // Insert user
+                    $sql = "INSERT INTO user_accounts (fullname, username, email, phone, password, created_at) 
+                            VALUES ('$fullname', '$username', '$email', '$phone', '$hashed_password', NOW())";
+                    
+                    if (mysqli_query($conn, $sql)) {
+                        $success = 'Registration successful! You can now login.';
+                        // Optionally auto-login
+                        // $_SESSION['user_id'] = mysqli_insert_id($conn);
+                        // redirect(SITE_URL . '/index.php');
+                    } else {
+                        $error = 'Registration failed. Please try again.';
+                    }
                 }
             }
         }
@@ -274,7 +299,7 @@ include 'includes/header.php';
                 </div>
                 
                 <div class="captcha-container">
-                    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                    <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>" data-theme="light"></div>
                 </div>
                 
                 <button type="submit" class="submit-btn">Create Account</button>

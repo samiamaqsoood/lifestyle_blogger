@@ -15,6 +15,10 @@ define('SITE_URL', 'https://blogbee.lovestoblog.com');
 define('SITE_NAME', 'Lifestyle Blogger');
 define('SITE_DESCRIPTION', 'Welcome to My Journey of Discovery and Growth');
 
+// reCAPTCHA Configuration
+define('RECAPTCHA_SITE_KEY', '6LfgNjksAAAAAICHYoiYpBgJAKtuEJerCzzI8osH');
+define('RECAPTCHA_SECRET_KEY', '6LfgNjksAAAAADZgrMpVaayg-c01a-ygorMBTNv1');
+
 // Create database connection
 $conn = @mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
