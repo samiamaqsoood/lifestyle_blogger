@@ -33,15 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($result && mysqli_num_rows($result) === 1) {
                     $user = mysqli_fetch_assoc($result);
                     
+                    // Verify password
                     if (password_verify($password, $user['password'])) {
                         $_SESSION['admin_id'] = $user['id'];
                         $_SESSION['admin_username'] = $user['username'];
                         redirect(SITE_URL . '/admin/dashboard.php');
                     } else {
-                        $error = 'Invalid admin credentials.';
+                        $error = 'Invalid admin credentials. Please check your username and password.';
                     }
                 } else {
-                    $error = 'Invalid admin credentials.';
+                    $error = 'Admin user not found. Please contact the administrator.';
                 }
             } else {
                 // User login - only allow regular users (not admins)
